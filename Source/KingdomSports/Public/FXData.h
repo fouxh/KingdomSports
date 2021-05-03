@@ -19,7 +19,14 @@ class UAnimMontage;
 class UCurveFloat;
 
 //Movement states
-
+UENUM(BlueprintType)
+enum class EPlayerBallStatusFx : uint8
+{
+	ENone  UMETA(DisplayName = "None"),
+    EPossessBall  UMETA(DisplayName = "PossessBall"),
+    EKick  UMETA(DisplayName = "Kick"),
+    ECrossing  UMETA(DisplayName = "Crossing"),
+};
 
 UENUM(BlueprintType)
 enum class EModificationTypeFx : uint8
