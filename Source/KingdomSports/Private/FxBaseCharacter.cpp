@@ -116,6 +116,7 @@ void AFxBaseCharacter::HaveBallFx(AFxBallActor* Ball_loc)
 	{
 		SetBallRef(Ball_loc);
 		UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
+		OnBallStatusChange.Broadcast(EPlayerBallStatusFx::EPossessBall);
 		 TArray < AActor * > PlayerArray_Out;
 		 AFxBaseCharacter * Player_locref;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(),GetClass(),PlayerArray_Out);
@@ -125,6 +126,7 @@ void AFxBaseCharacter::HaveBallFx(AFxBallActor* Ball_loc)
 			if(Player_locref!=this)
 			{
 				Player_locref->UpdateBallStatus(EPlayerBallStatusFx::ENone);
+				Player_locref->OnBallStatusChange.Broadcast(EPlayerBallStatusFx::ENone);
 			}
 		}
 		//PlayerArray_loc
@@ -140,8 +142,8 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 
 	UWorld* world = GetWorld();
 float Speed_loc=GetVelocity().Size();
-float Distanceloc=UKismetMathLibrary::MapRangeClamped(Speed_loc,0.0,600,MinBallDistance,MaxBallDistance);
-	FVector StartLoc =(ArrowDirection->GetForwardVector()*Distanceloc)+GetActorLocation();
+//float Distanceloc=UKismetMathLibrary::MapRangeClamped(Speed_loc,0.0,600,MinBallDistance,MaxBallDistance);
+	FVector StartLoc =(ArrowDirection->GetForwardVector()*MaxBallDistance)+GetActorLocation();
 	FVector TargetLoc =StartLoc+FVector(0.0,0.0,-1000);
 	TArray<AActor*> IngoreActors;
 	IngoreActors.Add(this);
@@ -175,6 +177,7 @@ void AFxBaseCharacter::MovingWithBall_srv_Implementation(FVector _Loc)
 void AFxBaseCharacter::UpdateBallStatus_Implementation(EPlayerBallStatusFx _sts)
 {
 	PlayerBallStatus=_sts;
+
 }
 
 void AFxBaseCharacter::SetBallRef_Implementation(AFxBallActor* Ball_loc)

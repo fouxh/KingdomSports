@@ -7,7 +7,7 @@
 #include "FXData.h"
 #include "GameFramework/Character.h"
 #include "FxBaseCharacter.generated.h"
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBallStatusChange, EPlayerBallStatusFx, BallStatus_loc);
 UCLASS()
 class KINGDOMSPORTS_API AFxBaseCharacter : public ACharacter
 {
@@ -49,6 +49,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(BlueprintAssignable, Category = FX)
+	FOnBallStatusChange  OnBallStatusChange ;
 
 public:
 	// Called every frame
