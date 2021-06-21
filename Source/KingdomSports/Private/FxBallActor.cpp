@@ -6,6 +6,7 @@
 #include "Components/SplineComponent.h"
 #include "Kismet/KismetArrayLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/StaticMeshComponent.h"
 #include "FxBaseCharacter.h"
@@ -13,30 +14,29 @@
 // Sets default values
 AFxBallActor::AFxBallActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SetReplicates(true);
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Root->SetupAttachment(GetRootComponent());
+	BallCollision = CreateDefaultSubobject<USphereComponent>(TEXT("BallCollision"));
+	BallCollision->SetupAttachment(Root);
 	BallMesh= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
-	BallMesh->SetupAttachment(GetRootComponent());
+	BallMesh->SetupAttachment(BallCollision);
 	SplineComponentFx= CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	StartLocation =TargetLocation=GetActorLocation();
-	BallCollision = CreateDefaultSubobject<USphereComponent>(TEXT("BallCollision"));
-	BallCollision->SetupAttachment(BallMesh);
+	
 }
-void AFxBallActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+
+void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-
 	DOREPLIFETIME(AFxBallActor, IsBallCurve);
-	/*DOREPLIFETIME(AFxBallActor, IsBallMove);
+/*	DOREPLIFETIME(AFxBallActor, IsBallMove);
 	DOREPLIFETIME(AFxBallActor, StartLocation);
 	DOREPLIFETIME(AFxBallActor, TargetLocation);
-	*/
-
-
+*/
 }
-
 
 void AFxBallActor::UpdateBallLocation_srv_Implementation()
 {
@@ -44,19 +44,13 @@ void AFxBallActor::UpdateBallLocation_srv_Implementation()
 	{
 		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
 		FRotator TargetRotaion=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-
 		SetActorLocation(MoveLocation_loc);
-		if(CharacterOwner)
+		if (CharacterOwner)
 		{
-			if(CharacterOwner->MoveForwardFx > 0.2)
-			{
+			if (CharacterOwner->MoveForwardFx > 0.2)
 				SetActorRotation(TargetRotaion);
-			}
-
 		}
-
 	}
-
 }
 
 void AFxBallActor::SetTargetLocationFx_Implementation(FVector TargetLocation_loc, bool _Enable)
@@ -71,7 +65,6 @@ void AFxBallActor::UpdateBallLocation()
 	if(IsBallMove)
 	{
 		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
-		//RotateBallSpeed=UKismetMathLibrary::lerp()
 		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
 		if(DistanceBall<=2.0)
 		{
@@ -81,22 +74,9 @@ void AFxBallActor::UpdateBallLocation()
 		{
 			RotateBallSpeed=5;
 		}
-		FRotator TargetRotaion=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-
-			SetActorLocation(MoveLocation_loc);
-
-
-		SetActorRotation(TargetRotaion);
-
-
+		FRotator TargetRotation=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
+		SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
 	}
-}
-
-void AFxBallActor::SetTargetLocation_internalFx(FVector TargetLocation_loc, bool _Enable)
-{
-	StartLocation=GetActorLocation();
-	TargetLocation=TargetLocation_loc;
-	IsBallMove=true;
 }
 
 void AFxBallActor::InitBall()
@@ -109,9 +89,7 @@ void AFxBallActor::InitBall()
 		OnFinishedTimeline.BindUFunction(this, FName("FinishMoveBallCurve"));
 		CurveFTimeline.SetTimelineFinishedFunc(OnFinishedTimeline);
 		//CurveFTimeline.SetLooping(true);
-
 		//CurveFTimeline.PlayFromStart();
-
 	}
 	BallCollision->OnComponentBeginOverlap.AddDynamic(this, &AFxBallActor::OnOverlapActivateSphere);
 }
@@ -137,10 +115,7 @@ void AFxBallActor::TimelineProgress(float _value)
 			{
 				SetActorRotation(TargetRotaion);
 			}
-
 		}
-
-
 		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
 		//if(DistanceBall)
 	}
@@ -166,41 +141,58 @@ void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offse
 
 }
 
-
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	////todo check he has a defence skil
-	AFxBaseCharacter * CharLoc=Cast<AFxBaseCharacter>(OtherActor);
-	if(CharLoc)
-	{
-		CharLoc->HaveBallFx(this);
 
+	AFxBaseCharacter* CharLoc = Cast<AFxBaseCharacter>(OtherActor);
+	if (CharLoc) 
+	{
+		if (CharLoc == CharacterOwner || CharLoc->IsStunned)
+		{
+			return;
+		}
+		
+		if (!CharLoc->IsStunned)
+		{
+			CharLoc->SetBallRef(this);
+			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
+			CharLoc->UpdateTick(true);
+			CharLoc->SetActorTickEnabled(true);
+
+			for (int i = 0; i < PlayerArray_Out.Num(); ++i)
+			{
+				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(PlayerArray_Out[i]);
+				if (Player_locref)
+				{
+					if (Player_locref != CharLoc)
+					{
+						Player_locref->UpdateTick(false);
+						Player_locref->SetActorTickEnabled(false);
+						Player_locref->UpdateBallStatus(EPlayerBallStatusFx::ENone);
+					}
+				}
+			}
+		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("We got a collision."));
 }
 
-
-// Called when the game starts or when spawned
 void AFxBallActor::BeginPlay()
 {
 	Super::BeginPlay();
 	InitBall();
-
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFxBaseCharacter::StaticClass(), PlayerArray_Out);
 }
 
-// Called every frame
 void AFxBallActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(IsBallCurve)
-	{
-		CurveFTimeline.TickTimeline(DeltaTime);
-	}
-	else
-	{
-		UpdateBallLocation();
-	}
-
+		if (IsBallCurve)
+		{
+			CurveFTimeline.TickTimeline(DeltaTime);
+		}
+		else
+		{
+			UpdateBallLocation();
+		}
 }
-

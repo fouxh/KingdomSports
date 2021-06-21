@@ -16,10 +16,13 @@ class KINGDOMSPORTS_API AFxBaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFxBaseCharacter();
-	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = FX)
-	class UArrowComponent * ArrowDirection;
+	
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = FX)
 	AFxBallActor* BallRefFx;
+	UPROPERTY(BlueprintReadwrite)
+	TArray<AActor*> PlayerArray_Out;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite)
+	bool IsStunned;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = FX)
     EIntentDirectionTypeFx DirectionIntent;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
@@ -30,14 +33,15 @@ public:
     float MaxBallDistance=120.0;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
     float MinBallDistance=30.0;
+	UPROPERTY(EditAnywhere, BlueprintReadwrite)
+	FVector GoalTargetLocation;
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = State)
     EPlayerBallStatusFx PlayerBallStatus;
+
 	UFUNCTION(BlueprintPure,Category=FX)
     EIntentDirectionTypeFx GetDirection();
 	UFUNCTION(BlueprintCallable,Category=State)
     void InitCharacter();
-	UFUNCTION(BlueprintCallable,Category=State)
-	void HaveBallFx(AFxBallActor* Ball_loc);
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
 	void UpdateBallStatus(EPlayerBallStatusFx _sts);
 	UFUNCTION(BlueprintCallable,Category=Fx)
@@ -46,6 +50,10 @@ public:
 	void MovingWithBall_srv(FVector _Loc);
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
 	void SetBallRef(AFxBallActor* Ball_loc);
+	UFUNCTION(BlueprintCallable)
+	void GoalTarget(float DeltaTime);
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = State)
+	void UpdateTick(bool _Enable);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

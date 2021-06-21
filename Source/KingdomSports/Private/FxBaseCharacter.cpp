@@ -2,6 +2,8 @@
 
 
 #include "FxBaseCharacter.h"
+#include "GoalActor.h"
+#include "BallGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ArrowComponent.h"
@@ -9,19 +11,16 @@
 // Sets default values
 AFxBaseCharacter::AFxBaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
 }
+
 void AFxBaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
 	DOREPLIFETIME(AFxBaseCharacter, PlayerBallStatus);
 	DOREPLIFETIME(AFxBaseCharacter, BallRefFx);
-
-
 }
+
 EIntentDirectionTypeFx AFxBaseCharacter::GetDirection()
 {
 	float Fwd_loc=MoveForwardFx;
@@ -105,108 +104,82 @@ EIntentDirectionTypeFx AFxBaseCharacter::GetDirection()
 
 void AFxBaseCharacter::InitCharacter()
 {
-	TArray<UActorComponent*> ArrowsRef=GetComponentsByTag(UActorComponent::StaticClass(),"Arrow");
-	ArrowDirection=Cast<UArrowComponent>(ArrowsRef[0]);
-
-}
-
-void AFxBaseCharacter::HaveBallFx(AFxBallActor* Ball_loc)
-{
-	if(Ball_loc && PlayerBallStatus==EPlayerBallStatusFx::ENone)
-	{
-		SetBallRef(Ball_loc);
-		UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
-		OnBallStatusChange.Broadcast(EPlayerBallStatusFx::EPossessBall);
-		 TArray < AActor * > PlayerArray_Out;
-		 AFxBaseCharacter * Player_locref;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(),GetClass(),PlayerArray_Out);
-		for(int32 Index = 0; Index < PlayerArray_Out.Num(); ++Index)
-		{
-		Player_locref=Cast<AFxBaseCharacter>(PlayerArray_Out[Index]);
-			if(Player_locref!=this)
-			{
-				Player_locref->UpdateBallStatus(EPlayerBallStatusFx::ENone);
-				Player_locref->OnBallStatusChange.Broadcast(EPlayerBallStatusFx::ENone);
-			}
-		}
-		//PlayerArray_loc
-
-	}
 
 }
 
 void AFxBaseCharacter::StartMoveWithTheBall()
 {
-	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall)
+	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall && BallRefFx)
 	{
-
-	UWorld* world = GetWorld();
-float Speed_loc=GetVelocity().Size();
-//float Distanceloc=UKismetMathLibrary::MapRangeClamped(Speed_loc,0.0,600,MinBallDistance,MaxBallDistance);
-	FVector StartLoc =(ArrowDirection->GetForwardVector()*MaxBallDistance)+GetActorLocation();
-	FVector TargetLoc =StartLoc+FVector(0.0,0.0,-1000);
-	TArray<AActor*> IngoreActors;
-	IngoreActors.Add(this);
-	FCollisionQueryParams TraceParams(TEXT("LineOfSight_Trace"), false, this);
-	TArray<FHitResult> HitRetArray;
+	float Speed = GetVelocity().Size();
 	FHitResult HitResultFx;
-	bool isHit =world->LineTraceSingleByChannel(HitResultFx,StartLoc,TargetLoc, ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
-	if (isHit)
-	{
-
-
+	FVector Start = (GetActorForwardVector()*MaxBallDistance)+GetActorLocation();
+	FVector End = Start+FVector(0.0,0.0,-500);
+	GetWorld()->LineTraceSingleByChannel(HitResultFx, Start, End, ECollisionChannel::ECC_Visibility);
+	if (HitResultFx.bBlockingHit)
 		MovingWithBall_srv(HitResultFx.Location);
-
-
-
-
-	}
 	}
 }
 
 void AFxBaseCharacter::MovingWithBall_srv_Implementation(FVector _Loc)
 {
-	if(BallRefFx)
-	{
-		FVector _LocWithOffset=_Loc+FVector(0.0,0.0,15);
-	//	BallRefFx->SetTargetLocation_internalFx(_LocWithOffset,true);
-		BallRefFx->SetTargetLocationFx(_LocWithOffset,true);
-	}
+	FVector Offset = _Loc + FVector(0.0,0.0,16);
+	BallRefFx->SetTargetLocationFx(Offset,true);
 }
 
 void AFxBaseCharacter::UpdateBallStatus_Implementation(EPlayerBallStatusFx _sts)
 {
 	PlayerBallStatus=_sts;
-
+	OnBallStatusChange.Broadcast(_sts);
 }
 
 void AFxBaseCharacter::SetBallRef_Implementation(AFxBallActor* Ball_loc)
 {
-
 	BallRefFx=Ball_loc;
 	BallRefFx->CharacterOwner=this;
 }
 
-// Called when the game starts or when spawned
+void AFxBaseCharacter::GoalTarget(float DeltaTime)
+{
+	FHitResult Hit;
+	FVector Start = GetActorLocation();
+	FRotator Rotation = GetControlRotation();
+	FVector End = Start + (UKismetMathLibrary::GetForwardVector(Rotation) * 5500.f);
+	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility);
+
+	if (Hit.bBlockingHit)
+	{
+		AGoalActor* GoalRef = Cast<AGoalActor>(Hit.GetActor());
+
+		if (GoalRef)
+		{
+			GoalTargetLocation = Hit.Location;
+			UChildActorComponent* GoalTarget = GoalRef->FindComponentByClass<UChildActorComponent>();
+			if (GoalTarget)
+				GoalTarget->SetWorldLocation(GoalTargetLocation);
+		}
+	}
+}
+
+void AFxBaseCharacter::UpdateTick_Implementation(bool _Enable)
+{
+	SetActorTickEnabled(_Enable);
+}
+
 void AFxBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	InitCharacter();
-
-
 }
 
-// Called every frame
 void AFxBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if(PlayerBallStatus == EPlayerBallStatusFx::EPossessBall)
+		GoalTarget(DeltaTime);
 }
 
-// Called to bind functionality to input
 void AFxBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-

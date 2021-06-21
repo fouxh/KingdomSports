@@ -17,6 +17,8 @@ class KINGDOMSPORTS_API AFxBallActor : public AActor
         class UStaticMeshComponent * BallMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
         class USphereComponent* BallCollision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
+		class USceneComponent* Root;
 public:
 	// Sets default values for this actor's properties
 	AFxBallActor();
@@ -38,17 +40,16 @@ public:
     float DistanceBall;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     float MaxDistanceBall=120.0;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
     class AFxBaseCharacter * CharacterOwner;
+	UPROPERTY(BlueprintReadwrite)
+	TArray<AActor*> PlayerArray_Out;
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void UpdateBallLocation();
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=Fx)
 	void UpdateBallLocation_srv();
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=Fx)
 	void SetTargetLocationFx(FVector TargetLocation_loc,bool _Enable);
-	UFUNCTION(BlueprintCallable,Category=Fx)
-	void SetTargetLocation_internalFx(FVector TargetLocation_loc,bool _Enable);
-
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void InitBall();
 	UFUNCTION(BlueprintCallable,Category=Fx)
