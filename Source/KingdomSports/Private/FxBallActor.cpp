@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/StaticMeshComponent.h"
+#include "MyGKCharacter.h"
 #include "FxBaseCharacter.h"
 
 // Sets default values
@@ -62,6 +63,20 @@ void AFxBallActor::SetTargetLocationFx_Implementation(FVector TargetLocation_loc
 
 void AFxBallActor::UpdateBallLocation()
 {
+	/*
+	AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
+	if (GK)
+	{
+		if (IsAttachedTo(CharacterOwner))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("attached"));
+			return;
+		}
+		//SetActorLocation(GK->GetMesh()->GetSocketLocation("BallHand"));
+		AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,true), "BallHand");
+		return;
+	}
+	*/
 	if(IsBallMove)
 	{
 		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
@@ -75,7 +90,8 @@ void AFxBallActor::UpdateBallLocation()
 			RotateBallSpeed=5;
 		}
 		FRotator TargetRotation=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-		SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
+		//SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
+		SetActorLocation(MoveLocation_loc);
 	}
 }
 
@@ -141,6 +157,20 @@ void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offse
 
 }
 
+void AFxBallActor::UpdatePhysics_srv_Implementation(bool _Enable)
+{
+	BallCollision->SetSimulatePhysics(_Enable);
+	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	UpdatePhysics_Multi(_Enable);
+}
+
+void AFxBallActor::UpdatePhysics_Multi_Implementation(bool _Enable)
+{
+	BallCollision->SetSimulatePhysics(_Enable);
+	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ALOO"));
+}
+
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
@@ -151,7 +181,7 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		{
 			return;
 		}
-		
+
 		if (!CharLoc->IsStunned)
 		{
 			CharLoc->SetBallRef(this);
@@ -173,6 +203,12 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 				}
 			}
 		}
+
+		/*if (BallCollision->IsSimulatingPhysics())
+		{
+			CharLoc->ResetBallPhysics();
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Simulating"));
+		}*/
 	}
 }
 

@@ -121,6 +121,11 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 	}
 }
 
+void AFxBaseCharacter::ResetBallPhysics()
+{
+	BallRefFx->UpdatePhysics_srv(false);
+}
+
 void AFxBaseCharacter::MovingWithBall_srv_Implementation(FVector _Loc)
 {
 	FVector Offset = _Loc + FVector(0.0,0.0,16);

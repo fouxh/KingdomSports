@@ -44,6 +44,7 @@ public:
     class AFxBaseCharacter * CharacterOwner;
 	UPROPERTY(BlueprintReadwrite)
 	TArray<AActor*> PlayerArray_Out;
+
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void UpdateBallLocation();
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=Fx)
@@ -58,7 +59,10 @@ public:
     void TimelineProgress(float _value);
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void Moveball_Curve(FVector Target_loc,float offsetZ,float offsetX);
-
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void UpdatePhysics_srv(bool _Enable);
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void UpdatePhysics_Multi(bool _Enable);
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -82,7 +86,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintPure, Category = FX)
-        FORCEINLINE class USplineComponent*  GetSplineComponent() const { return SplineComponentFx; }
+        FORCEINLINE class USplineComponent* GetSplineComponent() const { return SplineComponentFx; }
 	UFUNCTION(BlueprintPure, Category = FX)
-        FORCEINLINE class UStaticMeshComponent *  GetBallMesh() const { return BallMesh; }
+        FORCEINLINE class UStaticMeshComponent* GetBallMesh() const { return BallMesh; }
 };

@@ -19,6 +19,8 @@ public:
 	
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = FX)
 	AFxBallActor* BallRefFx;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = FX)
+	AActor* Target;
 	UPROPERTY(BlueprintReadwrite)
 	TArray<AActor*> PlayerArray_Out;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite)
@@ -46,6 +48,8 @@ public:
 	void UpdateBallStatus(EPlayerBallStatusFx _sts);
 	UFUNCTION(BlueprintCallable,Category=Fx)
     void StartMoveWithTheBall();
+	UFUNCTION(BlueprintCallable)
+	void ResetBallPhysics();
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
 	void MovingWithBall_srv(FVector _Loc);
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
@@ -58,7 +62,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UPROPERTY(BlueprintAssignable, Category = FX)
-	FOnBallStatusChange  OnBallStatusChange ;
+	FOnBallStatusChange OnBallStatusChange;
 
 public:
 	// Called every frame
