@@ -48,8 +48,8 @@ public:
 	void UpdateBallStatus(EPlayerBallStatusFx _sts);
 	UFUNCTION(BlueprintCallable,Category=Fx)
     void StartMoveWithTheBall();
-	UFUNCTION(BlueprintCallable)
-	void ResetBallPhysics();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ResetBallPhysics(bool NoCollision);
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
 	void MovingWithBall_srv(FVector _Loc);
 	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)

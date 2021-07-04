@@ -60,9 +60,9 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void Moveball_Curve(FVector Target_loc,float offsetZ,float offsetX);
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void UpdatePhysics_srv(bool _Enable);
+	void UpdatePhysics_srv(bool NoCollision);
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
-	void UpdatePhysics_Multi(bool _Enable);
+	void UpdatePhysics_Multi(bool NoCollision);
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

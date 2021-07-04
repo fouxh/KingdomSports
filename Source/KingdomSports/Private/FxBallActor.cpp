@@ -63,20 +63,22 @@ void AFxBallActor::SetTargetLocationFx_Implementation(FVector TargetLocation_loc
 
 void AFxBallActor::UpdateBallLocation()
 {
-	/*
+	
 	AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
 	if (GK)
 	{
 		if (IsAttachedTo(CharacterOwner))
 		{
 			GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("attached"));
+			SetActorTickEnabled(false);
 			return;
 		}
 		//SetActorLocation(GK->GetMesh()->GetSocketLocation("BallHand"));
+		CharacterOwner->ResetBallPhysics(true);
 		AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,true), "BallHand");
 		return;
 	}
-	*/
+	
 	if(IsBallMove)
 	{
 		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
@@ -90,8 +92,8 @@ void AFxBallActor::UpdateBallLocation()
 			RotateBallSpeed=5;
 		}
 		FRotator TargetRotation=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-		//SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
-		SetActorLocation(MoveLocation_loc);
+		SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
+		
 	}
 }
 
@@ -157,18 +159,20 @@ void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offse
 
 }
 
-void AFxBallActor::UpdatePhysics_srv_Implementation(bool _Enable)
+void AFxBallActor::UpdatePhysics_srv_Implementation(bool NoCollision)
 {
-	BallCollision->SetSimulatePhysics(_Enable);
-	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	UpdatePhysics_Multi(_Enable);
+	UpdatePhysics_Multi(NoCollision);
 }
 
-void AFxBallActor::UpdatePhysics_Multi_Implementation(bool _Enable)
+void AFxBallActor::UpdatePhysics_Multi_Implementation(bool NoCollision)
 {
-	BallCollision->SetSimulatePhysics(_Enable);
+	BallCollision->SetSimulatePhysics(false);
 	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ALOO"));
+	if (NoCollision)
+	{
+		BallCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SetActorTickEnabled(NoCollision);
+	}
 }
 
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -204,11 +208,11 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 			}
 		}
 
-		/*if (BallCollision->IsSimulatingPhysics())
+		if (BallCollision->IsSimulatingPhysics())
 		{
-			CharLoc->ResetBallPhysics();
+			CharLoc->ResetBallPhysics(false);
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Simulating"));
-		}*/
+		}
 	}
 }
 

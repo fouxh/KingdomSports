@@ -121,9 +121,9 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 	}
 }
 
-void AFxBaseCharacter::ResetBallPhysics()
+void AFxBaseCharacter::ResetBallPhysics_Implementation(bool NoCollision)
 {
-	BallRefFx->UpdatePhysics_srv(false);
+	BallRefFx->UpdatePhysics_srv(NoCollision);
 }
 
 void AFxBaseCharacter::MovingWithBall_srv_Implementation(FVector _Loc)
