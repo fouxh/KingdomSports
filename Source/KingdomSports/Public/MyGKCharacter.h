@@ -6,9 +6,6 @@
 #include "FxBaseCharacter.h"
 #include "MyGKCharacter.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class KINGDOMSPORTS_API AMyGKCharacter : public AFxBaseCharacter
 {
@@ -16,7 +13,8 @@ class KINGDOMSPORTS_API AMyGKCharacter : public AFxBaseCharacter
 public:
 
 	AMyGKCharacter();
-
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void SetFocus(AActor* Actor);
 	UFUNCTION(BlueprintNativeEvent)
 	void UpdateLocation();
 

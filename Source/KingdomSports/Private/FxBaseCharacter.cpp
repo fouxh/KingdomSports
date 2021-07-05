@@ -19,6 +19,7 @@ void AFxBaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AFxBaseCharacter, PlayerBallStatus);
 	DOREPLIFETIME(AFxBaseCharacter, BallRefFx);
+	DOREPLIFETIME(AFxBaseCharacter, IsStunned);
 }
 
 EIntentDirectionTypeFx AFxBaseCharacter::GetDirection()
@@ -111,31 +112,80 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 {
 	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall && BallRefFx)
 	{
+		FVector NewLocation = (GetActorForwardVector() * MaxBallDistance) + GetActorLocation();
+		NewLocation.Z = 16;
+		MoveBall(NewLocation);
+	/*
 	float Speed = GetVelocity().Size();
 	FHitResult HitResultFx;
 	FVector Start = (GetActorForwardVector()*MaxBallDistance)+GetActorLocation();
 	FVector End = Start+FVector(0.0,0.0,-500);
 	GetWorld()->LineTraceSingleByChannel(HitResultFx, Start, End, ECollisionChannel::ECC_Visibility);
 	if (HitResultFx.bBlockingHit)
-		MovingWithBall_srv(HitResultFx.Location);
+		MoveBall(HitResultFx.Location);*/
 	}
 }
 
-void AFxBaseCharacter::ResetBallPhysics_Implementation(bool NoCollision)
+void AFxBaseCharacter::MoveBall(FVector Location)
 {
-	BallRefFx->UpdatePhysics_srv(NoCollision);
+	if (HasAuthority())
+		return;
+	else
+	{
+		MoveBall_Client(Location);
+		MoveBall_Srv(Location);
+		GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("MoveBall"));
+
+	}
 }
 
-void AFxBaseCharacter::MovingWithBall_srv_Implementation(FVector _Loc)
+void AFxBaseCharacter::BallMovement(FVector Location)
 {
-	FVector Offset = _Loc + FVector(0.0,0.0,16);
-	BallRefFx->SetTargetLocationFx(Offset,true);
+	FVector MoveLocation = UKismetMathLibrary::VLerp(BallRefFx->GetActorLocation(), Location, 0.1f);
+	float DistanceBall = UKismetMathLibrary::Vector_Distance(BallRefFx->GetActorLocation(), Location);
+	float RotateBallSpeed;
+	if (DistanceBall <= 2.0)
+		RotateBallSpeed = 0.001;
+	else
+		RotateBallSpeed = 5;
+	FRotator TargetRotation = BallRefFx->GetActorRotation();
+	TargetRotation.Roll += RotateBallSpeed;
+	BallRefFx->SetActorLocationAndRotation(MoveLocation, TargetRotation);
+}
+
+void AFxBaseCharacter::MoveBall_Srv_Implementation(FVector Location)
+{
+	MoveBall_Multi(Location);
+	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Server"));
+}
+
+void AFxBaseCharacter::MoveBall_Multi_Implementation(FVector Location)
+{
+	if (IsLocallyControlled())
+		return;
+	else
+		BallMovement(Location);
+	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Multi"));
+
+}
+
+void AFxBaseCharacter::MoveBall_Client_Implementation(FVector Location)
+{
+	BallMovement(Location);
+	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Client"));
+
+}
+
+void AFxBaseCharacter::ResetBallPhysics_Implementation()
+{
+	BallRefFx->DisablePhysics_srv();
 }
 
 void AFxBaseCharacter::UpdateBallStatus_Implementation(EPlayerBallStatusFx _sts)
 {
 	PlayerBallStatus=_sts;
 	OnBallStatusChange.Broadcast(_sts);
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::Printf(TEXT("Status Changed: %s"), *GetActorLabel()));
 }
 
 void AFxBaseCharacter::SetBallRef_Implementation(AFxBallActor* Ball_loc)

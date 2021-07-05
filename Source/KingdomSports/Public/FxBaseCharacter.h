@@ -39,25 +39,35 @@ public:
 	FVector GoalTargetLocation;
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = State)
     EPlayerBallStatusFx PlayerBallStatus;
-
-	UFUNCTION(BlueprintPure,Category=FX)
-    EIntentDirectionTypeFx GetDirection();
-	UFUNCTION(BlueprintCallable,Category=State)
-    void InitCharacter();
-	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
-	void UpdateBallStatus(EPlayerBallStatusFx _sts);
-	UFUNCTION(BlueprintCallable,Category=Fx)
-    void StartMoveWithTheBall();
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ResetBallPhysics(bool NoCollision);
-	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
-	void MovingWithBall_srv(FVector _Loc);
-	UFUNCTION(Server,Reliable,BlueprintCallable,Category=State)
-	void SetBallRef(AFxBallActor* Ball_loc);
+//////////////////////////////////////////////////////////////////////////////////
+	UFUNCTION(BlueprintPure, Category = FX)
+		EIntentDirectionTypeFx GetDirection();
+	UFUNCTION(BlueprintCallable, Category = State)
+		void InitCharacter();
+	UFUNCTION(BlueprintCallable, Category = Fx)
+		void StartMoveWithTheBall();
 	UFUNCTION(BlueprintCallable)
-	void GoalTarget(float DeltaTime);
+		void GoalTarget(float DeltaTime);
+	UFUNCTION(BlueprintCallable)
+		void MoveBall(FVector Location);
+	UFUNCTION(BlueprintCallable)
+		void BallMovement(FVector Location);
+//////////////////////////////////////////////////////////////////////////////////
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+		void ResetBallPhysics();
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = State)
-	void UpdateTick(bool _Enable);
+		void SetBallRef(AFxBallActor* Ball_loc);
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = State)
+		void UpdateTick(bool _Enable);
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = State)
+		void UpdateBallStatus(EPlayerBallStatusFx _sts);
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+		void MoveBall_Srv(FVector Location);
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+		void MoveBall_Multi(FVector Location);
+	UFUNCTION(Client, Reliable, BlueprintCallable)
+		void MoveBall_Client(FVector Location);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

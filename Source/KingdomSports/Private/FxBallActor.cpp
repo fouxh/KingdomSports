@@ -10,6 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/StaticMeshComponent.h"
 #include "MyGKCharacter.h"
+#include "GameFramework/GameState.h"
+#include "GameFramework/PlayerState.h"
 #include "FxBaseCharacter.h"
 
 // Sets default values
@@ -39,64 +41,6 @@ void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 */
 }
 
-void AFxBallActor::UpdateBallLocation_srv_Implementation()
-{
-	if(IsBallMove)
-	{
-		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
-		FRotator TargetRotaion=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-		SetActorLocation(MoveLocation_loc);
-		if (CharacterOwner)
-		{
-			if (CharacterOwner->MoveForwardFx > 0.2)
-				SetActorRotation(TargetRotaion);
-		}
-	}
-}
-
-void AFxBallActor::SetTargetLocationFx_Implementation(FVector TargetLocation_loc, bool _Enable)
-{
-	StartLocation=GetActorLocation();
-	TargetLocation=TargetLocation_loc;
-	IsBallMove=true;
-}
-
-void AFxBallActor::UpdateBallLocation()
-{
-	
-	AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
-	if (GK)
-	{
-		if (IsAttachedTo(CharacterOwner))
-		{
-			GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("attached"));
-			SetActorTickEnabled(false);
-			return;
-		}
-		//SetActorLocation(GK->GetMesh()->GetSocketLocation("BallHand"));
-		CharacterOwner->ResetBallPhysics(true);
-		AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,true), "BallHand");
-		return;
-	}
-	
-	if(IsBallMove)
-	{
-		FVector MoveLocation_loc=UKismetMathLibrary::VLerp(StartLocation,TargetLocation,BallSpeed);
-		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
-		if(DistanceBall<=2.0)
-		{
-			RotateBallSpeed=0.001;
-		}
-		else
-		{
-			RotateBallSpeed=5;
-		}
-		FRotator TargetRotation=FRotator(GetActorRotation().Pitch,GetActorRotation().Yaw,GetActorRotation().Roll+RotateBallSpeed);
-		SetActorLocationAndRotation(MoveLocation_loc, TargetRotation);
-		
-	}
-}
-
 void AFxBallActor::InitBall()
 {
 	if(CurveFloat)
@@ -106,42 +50,34 @@ void AFxBallActor::InitBall()
 		CurveFTimeline.AddInterpFloat(CurveFloat,TimelineProgress);
 		OnFinishedTimeline.BindUFunction(this, FName("FinishMoveBallCurve"));
 		CurveFTimeline.SetTimelineFinishedFunc(OnFinishedTimeline);
-		//CurveFTimeline.SetLooping(true);
-		//CurveFTimeline.PlayFromStart();
 	}
 	BallCollision->OnComponentBeginOverlap.AddDynamic(this, &AFxBallActor::OnOverlapActivateSphere);
+	Gamestate = UGameplayStatics::GetGameState(GetWorld());
 }
 
 void AFxBallActor::FinishMoveBallCurve()
 {
 	IsBallCurve=false;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Reach")));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Reach"));
 }
 
 void AFxBallActor::TimelineProgress(float _value)
 {
 	if(GetSplineComponent())
 	{
-		//FVector NewLocaction=FMath::Lerp(StartLocation,TargetLocation,_value);
 		FVector NewLocaction=GetSplineComponent()->GetLocationAtTime(_value,ESplineCoordinateSpace::Local,false);
 	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Ledg Block: %s"), *NewLocaction.ToString()));
-		FRotator TargetRotaion=FRotator(GetActorRotation().Pitch+RotateBallSpeed,GetActorRotation().Yaw,GetActorRotation().Roll);
+		FRotator TargetRotation=GetActorRotation();
+		TargetRotation.Pitch += RotateBallSpeed;
 		SetActorLocation(NewLocaction);
-		if(CharacterOwner)
-		{
-			if(CharacterOwner->MoveForwardFx > 0.2)
-			{
-				SetActorRotation(TargetRotaion);
-			}
-		}
+		if (CharacterOwner && CharacterOwner->MoveForwardFx > 0.2)
+			SetActorRotation(TargetRotation);
 		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
-		//if(DistanceBall)
 	}
 }
 
 void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offsetX)
 {
-
 	if(GetSplineComponent() && !IsBallCurve)
 	{
 		IsBallCurve=true;
@@ -156,28 +92,23 @@ void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offse
 		GetSplineComponent()->SetSplinePoints(PointLoc,ESplineCoordinateSpace::Local,true);
 		CurveFTimeline.PlayFromStart();
 	}
-
 }
 
-void AFxBallActor::UpdatePhysics_srv_Implementation(bool NoCollision)
+void AFxBallActor::DisablePhysics_srv_Implementation()
 {
-	UpdatePhysics_Multi(NoCollision);
+	DisablePhysics_Multi();
 }
 
-void AFxBallActor::UpdatePhysics_Multi_Implementation(bool NoCollision)
+void AFxBallActor::DisablePhysics_Multi_Implementation()
 {
+	SetActorLocation(BallCollision->GetComponentLocation());
 	BallCollision->SetSimulatePhysics(false);
 	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	if (NoCollision)
-	{
-		BallCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SetActorTickEnabled(NoCollision);
-	}
 }
 
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	
 	AFxBaseCharacter* CharLoc = Cast<AFxBaseCharacter>(OtherActor);
 	if (CharLoc) 
 	{
@@ -192,10 +123,10 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
 			CharLoc->UpdateTick(true);
 			CharLoc->SetActorTickEnabled(true);
-
-			for (int i = 0; i < PlayerArray_Out.Num(); ++i)
+		
+			for (int i = 0; i < Gamestate->PlayerArray.Num(); ++i)
 			{
-				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(PlayerArray_Out[i]);
+				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(Gamestate->PlayerArray[i]->GetPawn());
 				if (Player_locref)
 				{
 					if (Player_locref != CharLoc)
@@ -207,11 +138,21 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 				}
 			}
 		}
+		
+		AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
+
+		if (GK)
+		{
+			GK->ResetBallPhysics();
+			AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
+			return;
+		}
 
 		if (BallCollision->IsSimulatingPhysics())
 		{
-			CharLoc->ResetBallPhysics(false);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Simulating"));
+			CharLoc->ResetBallPhysics();
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Simulating"));
 		}
 	}
 }
@@ -220,7 +161,6 @@ void AFxBallActor::BeginPlay()
 {
 	Super::BeginPlay();
 	InitBall();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFxBaseCharacter::StaticClass(), PlayerArray_Out);
 }
 
 void AFxBallActor::Tick(float DeltaTime)
@@ -228,11 +168,5 @@ void AFxBallActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 		if (IsBallCurve)
-		{
-			CurveFTimeline.TickTimeline(DeltaTime);
-		}
-		else
-		{
-			UpdateBallLocation();
-		}
+			CurveFTimeline.TickTimeline(DeltaTime);		
 }

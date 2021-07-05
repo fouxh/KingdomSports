@@ -41,16 +41,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     float MaxDistanceBall=120.0;
 	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
-    class AFxBaseCharacter * CharacterOwner;
+    class AFxBaseCharacter* CharacterOwner;
 	UPROPERTY(BlueprintReadwrite)
-	TArray<AActor*> PlayerArray_Out;
-
-	UFUNCTION(BlueprintCallable,Category=Fx)
-	void UpdateBallLocation();
-	UFUNCTION(Server,Reliable,BlueprintCallable,Category=Fx)
-	void UpdateBallLocation_srv();
-	UFUNCTION(Server,Reliable,BlueprintCallable,Category=Fx)
-	void SetTargetLocationFx(FVector TargetLocation_loc,bool _Enable);
+		AGameStateBase* Gamestate;
+/////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void InitBall();
 	UFUNCTION(BlueprintCallable,Category=Fx)
@@ -60,12 +54,11 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void Moveball_Curve(FVector Target_loc,float offsetZ,float offsetX);
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void UpdatePhysics_srv(bool NoCollision);
+	void DisablePhysics_srv();
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
-	void UpdatePhysics_Multi(bool NoCollision);
+	void DisablePhysics_Multi();
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 
 protected:
 	// Called when the game starts or when spawned
