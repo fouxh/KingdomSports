@@ -363,7 +363,11 @@ void UTargetSystemComponent::TargetLockOff()
 			ControlRotation(false);
 		}
 
-		PlayerController->ResetIgnoreLookInput();
+		if (PlayerController)
+		{
+			PlayerController->ResetIgnoreLookInput();
+		}
+		
 
 		if (OnTargetLockedOff.IsBound())
 		{

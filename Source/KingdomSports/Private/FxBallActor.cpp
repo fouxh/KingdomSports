@@ -35,10 +35,8 @@ void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AFxBallActor, IsBallCurve);
-/*	DOREPLIFETIME(AFxBallActor, IsBallMove);
-	DOREPLIFETIME(AFxBallActor, StartLocation);
-	DOREPLIFETIME(AFxBallActor, TargetLocation);
-*/
+
+	//DOREPLIFETIME(AFxBallActor, CharacterOwner);
 }
 
 void AFxBallActor::InitBall()
@@ -66,7 +64,6 @@ void AFxBallActor::TimelineProgress(float _value)
 	if(GetSplineComponent())
 	{
 		FVector NewLocaction=GetSplineComponent()->GetLocationAtTime(_value,ESplineCoordinateSpace::Local,false);
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Ledg Block: %s"), *NewLocaction.ToString()));
 		FRotator TargetRotation=GetActorRotation();
 		TargetRotation.Pitch += RotateBallSpeed;
 		SetActorLocation(NewLocaction);
@@ -112,10 +109,8 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 	AFxBaseCharacter* CharLoc = Cast<AFxBaseCharacter>(OtherActor);
 	if (CharLoc) 
 	{
-		if (CharLoc == CharacterOwner || CharLoc->IsStunned)
-		{
+		if ((CharLoc->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall && CharLoc == CharacterOwner) || CharLoc->IsStunned)
 			return;
-		}
 
 		if (!CharLoc->IsStunned)
 		{
@@ -123,7 +118,7 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
 			CharLoc->UpdateTick(true);
 			CharLoc->SetActorTickEnabled(true);
-		
+			RedOwned = CharLoc->ActorHasTag("Red");
 			for (int i = 0; i < Gamestate->PlayerArray.Num(); ++i)
 			{
 				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(Gamestate->PlayerArray[i]->GetPawn());
@@ -131,6 +126,11 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 				{
 					if (Player_locref != CharLoc)
 					{
+						if (AMyGKCharacter* GK_LocRef = Cast<AMyGKCharacter>(Player_locref))
+						{
+							GK_LocRef->UpdateBallStatus(EPlayerBallStatusFx::ENone);
+							continue;
+						}
 						Player_locref->UpdateTick(false);
 						Player_locref->SetActorTickEnabled(false);
 						Player_locref->UpdateBallStatus(EPlayerBallStatusFx::ENone);
@@ -143,7 +143,7 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 
 		if (GK)
 		{
-			GK->ResetBallPhysics();
+			DisablePhysics_srv();
 			AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
 			return;

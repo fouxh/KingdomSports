@@ -20,6 +20,7 @@ void AFxBaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
 	DOREPLIFETIME(AFxBaseCharacter, PlayerBallStatus);
 	DOREPLIFETIME(AFxBaseCharacter, BallRefFx);
 	DOREPLIFETIME(AFxBaseCharacter, IsStunned);
+	DOREPLIFETIME(AFxBaseCharacter, Target);
 }
 
 EIntentDirectionTypeFx AFxBaseCharacter::GetDirection()
@@ -128,14 +129,15 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 
 void AFxBaseCharacter::MoveBall(FVector Location)
 {
+	if (GetNetMode() == ENetMode::NM_Standalone)
+		BallMovement(Location);
+
 	if (HasAuthority())
 		return;
 	else
 	{
 		MoveBall_Client(Location);
 		MoveBall_Srv(Location);
-		GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("MoveBall"));
-
 	}
 }
 
@@ -156,7 +158,6 @@ void AFxBaseCharacter::BallMovement(FVector Location)
 void AFxBaseCharacter::MoveBall_Srv_Implementation(FVector Location)
 {
 	MoveBall_Multi(Location);
-	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Server"));
 }
 
 void AFxBaseCharacter::MoveBall_Multi_Implementation(FVector Location)
@@ -165,15 +166,11 @@ void AFxBaseCharacter::MoveBall_Multi_Implementation(FVector Location)
 		return;
 	else
 		BallMovement(Location);
-	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Multi"));
-
 }
 
 void AFxBaseCharacter::MoveBall_Client_Implementation(FVector Location)
 {
 	BallMovement(Location);
-	GEngine->AddOnScreenDebugMessage(-1, GetWorld()->GetDeltaSeconds(), FColor::Yellow, TEXT("Move Client"));
-
 }
 
 void AFxBaseCharacter::ResetBallPhysics_Implementation()
@@ -220,6 +217,16 @@ void AFxBaseCharacter::UpdateTick_Implementation(bool _Enable)
 {
 	SetActorTickEnabled(_Enable);
 }
+
+//void AFxBaseCharacter::PlayMontage_Srv(UAnimMontage* Animation)
+//{
+//	PlayMontage_Multi(Animation);
+//}
+//
+//void AFxBaseCharacter::PlayMontage_Multi(UAnimMontage* Animation)
+//{
+//	PlayAnimMontage(Animation);
+//}
 
 void AFxBaseCharacter::BeginPlay()
 {

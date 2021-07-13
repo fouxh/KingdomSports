@@ -22,18 +22,13 @@ class KINGDOMSPORTS_API AFxBallActor : public AActor
 public:
 	// Sets default values for this actor's properties
 	AFxBallActor();
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	bool IsBallMove;
+
 	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
 	bool IsBallCurve;
-	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
-	bool IsReachToLocation;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     FVector StartLocation;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     FVector TargetLocation;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-    float BallSpeed=0.1;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     float RotateBallSpeed=5;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
@@ -43,7 +38,9 @@ public:
 	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
     class AFxBaseCharacter* CharacterOwner;
 	UPROPERTY(BlueprintReadwrite)
-		AGameStateBase* Gamestate;
+	AGameStateBase* Gamestate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool RedOwned;
 /////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void InitBall();

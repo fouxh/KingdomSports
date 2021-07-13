@@ -24,7 +24,6 @@ void AMyGKCharacter::SetFocus_Implementation(AActor* Actor)
 void AMyGKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SetActorTickEnabled(true);
 }
 
 void AMyGKCharacter::Tick(float DeltaTime)

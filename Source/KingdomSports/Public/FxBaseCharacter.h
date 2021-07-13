@@ -67,6 +67,10 @@ public:
 		void MoveBall_Multi(FVector Location);
 	UFUNCTION(Client, Reliable, BlueprintCallable)
 		void MoveBall_Client(FVector Location);
+	//UFUNCTION(Server, Reliable, BlueprintCallable)
+	//	void PlayMontage_Srv(UAnimMontage* Animation);
+	//UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	//	void PlayMontage_Multi(UAnimMontage* Animation);
 
 protected:
 	// Called when the game starts or when spawned
