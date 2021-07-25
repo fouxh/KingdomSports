@@ -11,7 +11,7 @@ public class KingdomSports : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore","UMG","AIModule","ApexDestruction"
+				"GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore","UMG","AIModule","ApexDestruction","TargetSystem"
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);
@@ -22,10 +22,12 @@ public class KingdomSports : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore","NavigationSystem" ,"AdvancedSessions","AdvancedSteamSessions"
+				"SlateCore","NavigationSystem" ,"AdvancedSessions","AdvancedSteamSessions","TargetSystem"
 				// ... add private dependencies that you statically link with here ...
 			}
 		);
+
+		PublicIncludePaths.AddRange(new string[] { "TargetSystem/Public", "TargetSystem/Classes", "TargetSystem/Private" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
