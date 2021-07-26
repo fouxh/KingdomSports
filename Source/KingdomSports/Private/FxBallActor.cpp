@@ -25,71 +25,69 @@ AFxBallActor::AFxBallActor()
 	BallCollision->SetupAttachment(Root);
 	BallMesh= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
 	BallMesh->SetupAttachment(BallCollision);
-	SplineComponentFx= CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
-	StartLocation =TargetLocation=GetActorLocation();
+	//SplineComponentFx= CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
+	//StartLocation =TargetLocation=GetActorLocation();
 	
 }
 
 void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AFxBallActor, IsBallCurve);
-	
+	//DOREPLIFETIME(AFxBallActor, IsBallCurve);
 	//DOREPLIFETIME(AFxBallActor, CharacterOwner);
 }
 
 void AFxBallActor::InitBall()
 {
-	if(CurveFloat)
-	{
-		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindUFunction(this,FName("TimelineProgress"));
-		CurveFTimeline.AddInterpFloat(CurveFloat,TimelineProgress);
-		OnFinishedTimeline.BindUFunction(this, FName("FinishMoveBallCurve"));
-		CurveFTimeline.SetTimelineFinishedFunc(OnFinishedTimeline);
-	}
+	//if(CurveFloat)
+	//{
+	//	FOnTimelineFloat TimelineProgress;
+	//	TimelineProgress.BindUFunction(this,FName("TimelineProgress"));
+	//	CurveFTimeline.AddInterpFloat(CurveFloat,TimelineProgress);
+	//	OnFinishedTimeline.BindUFunction(this, FName("FinishMoveBallCurve"));
+	//	CurveFTimeline.SetTimelineFinishedFunc(OnFinishedTimeline);
+	//}
 	BallCollision->OnComponentBeginOverlap.AddDynamic(this, &AFxBallActor::OnOverlapActivateSphere);
 	Gamestate = UGameplayStatics::GetGameState(GetWorld());
 }
 
-void AFxBallActor::FinishMoveBallCurve()
-{
-	IsBallCurve=false;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Reach"));
-}
-
-void AFxBallActor::TimelineProgress(float _value)
-{
-	if(GetSplineComponent())
-	{
-		FVector NewLocaction=GetSplineComponent()->GetLocationAtTime(_value,ESplineCoordinateSpace::Local,false);
-		FRotator TargetRotation=GetActorRotation();
-		TargetRotation.Pitch += RotateBallSpeed;
-		SetActorLocation(NewLocaction);
-		if (CharacterOwner && CharacterOwner->MoveForwardFx > 0.2)
-			SetActorRotation(TargetRotation);
-		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
-	}
-}
-
-void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offsetX)
-{
-	if(GetSplineComponent() && !IsBallCurve)
-	{
-		IsBallCurve=true;
-		StartLocation=GetActorLocation();
-		TargetLocation=Target_loc;
-		FVector locVector=(StartLocation+TargetLocation)/2;
-		FVector Middle_Vector=locVector+FVector(offsetX,-1,offsetZ);
-		TArray<FVector> PointLoc;
-		PointLoc.Add(StartLocation);
-		PointLoc.Add(Middle_Vector);
-		PointLoc.Add(TargetLocation);
-		GetSplineComponent()->SetSplinePoints(PointLoc,ESplineCoordinateSpace::Local,true);
-		CurveFTimeline.PlayFromStart();
-	}
-}
+//void AFxBallActor::FinishMoveBallCurve()
+//{
+//	IsBallCurve=false;
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Reach"));
+//}
+//
+//void AFxBallActor::TimelineProgress(float _value)
+//{
+//	if(GetSplineComponent())
+//	{
+//		FVector NewLocaction=GetSplineComponent()->GetLocationAtTime(_value,ESplineCoordinateSpace::Local,false);
+//		FRotator TargetRotation=GetActorRotation();
+//		TargetRotation.Pitch += RotateBallSpeed;
+//		SetActorLocation(NewLocaction);
+//		if (CharacterOwner && CharacterOwner->MoveForwardFx > 0.2)
+//			SetActorRotation(TargetRotation);
+//		DistanceBall=UKismetMathLibrary::Vector_Distance(GetActorLocation(),TargetLocation);
+//	}
+//}
+//
+//void AFxBallActor::Moveball_Curve(FVector Target_loc, float offsetZ, float offsetX)
+//{
+//	if(GetSplineComponent() && !IsBallCurve)
+//	{
+//		IsBallCurve=true;
+//		StartLocation=GetActorLocation();
+//		TargetLocation=Target_loc;
+//		FVector locVector=(StartLocation+TargetLocation)/2;
+//		FVector Middle_Vector=locVector+FVector(offsetX,-1,offsetZ);
+//		TArray<FVector> PointLoc;
+//		PointLoc.Add(StartLocation);
+//		PointLoc.Add(Middle_Vector);
+//		PointLoc.Add(TargetLocation);
+//		GetSplineComponent()->SetSplinePoints(PointLoc,ESplineCoordinateSpace::Local,true);
+//		CurveFTimeline.PlayFromStart();
+//	}
+//}
 
 void AFxBallActor::DisablePhysics_srv_Implementation()
 {
@@ -162,6 +160,6 @@ void AFxBallActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-		if (IsBallCurve)
-			CurveFTimeline.TickTimeline(DeltaTime);		
+		//if (IsBallCurve)
+		//	CurveFTimeline.TickTimeline(DeltaTime);		
 }
