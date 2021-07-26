@@ -27,7 +27,7 @@ public class KingdomSports : ModuleRules
 			}
 		);
 
-		PublicIncludePaths.AddRange(new string[] { "TargetSystem/Public", "TargetSystem/Classes", "TargetSystem/Private" });
+		//PublicIncludePaths.AddRange(new string[] { "TargetSystem/Public", "TargetSystem/Classes", "TargetSystem/Private" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -407,11 +407,13 @@ TArray<AActor*> UTargetSystemComponent::GetAllActorsOfClass(const TSubclassOf<AA
 	for (TActorIterator<AActor> ActorIterator(GetWorld(), ActorClass); ActorIterator; ++ActorIterator)
 	{
 		AActor* Actor = *ActorIterator;
-		
-		const bool bIsTargetable = TargetIsTargetable(Actor);
-		if (bIsTargetable)
+		if (CharacterReference->Tags[0] == Actor->Tags[0])
 		{
-			Actors.Add(Actor);
+			const bool bIsTargetable = TargetIsTargetable(Actor);
+			if (bIsTargetable)
+			{
+				Actors.Add(Actor);
+			}
 		}
 	}
 

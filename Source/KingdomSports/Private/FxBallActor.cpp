@@ -35,7 +35,7 @@ void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AFxBallActor, IsBallCurve);
-
+	
 	//DOREPLIFETIME(AFxBallActor, CharacterOwner);
 }
 
@@ -118,7 +118,6 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
 			CharLoc->UpdateTick(true);
 			CharLoc->SetActorTickEnabled(true);
-			RedOwned = CharLoc->ActorHasTag("Red");
 			for (int i = 0; i < Gamestate->PlayerArray.Num(); ++i)
 			{
 				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(Gamestate->PlayerArray[i]->GetPawn());
@@ -138,22 +137,18 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 				}
 			}
 		}
-		
-		AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
 
+		AMyGKCharacter* GK = Cast<AMyGKCharacter>(CharacterOwner);
 		if (GK)
 		{
 			DisablePhysics_srv();
 			AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
 			return;
 		}
 
 		if (BallCollision->IsSimulatingPhysics())
-		{
 			CharLoc->ResetBallPhysics();
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Simulating"));
-		}
 	}
 }
 

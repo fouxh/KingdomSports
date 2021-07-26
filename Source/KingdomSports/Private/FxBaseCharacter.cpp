@@ -143,16 +143,19 @@ void AFxBaseCharacter::MoveBall(FVector Location)
 
 void AFxBaseCharacter::BallMovement(FVector Location)
 {
-	FVector MoveLocation = UKismetMathLibrary::VLerp(BallRefFx->GetActorLocation(), Location, 0.1f);
-	float DistanceBall = UKismetMathLibrary::Vector_Distance(BallRefFx->GetActorLocation(), Location);
-	float RotateBallSpeed;
-	if (DistanceBall <= 2.0)
-		RotateBallSpeed = 0.001;
-	else
-		RotateBallSpeed = 5;
-	FRotator TargetRotation = BallRefFx->GetActorRotation();
-	TargetRotation.Roll += RotateBallSpeed;
-	BallRefFx->SetActorLocationAndRotation(MoveLocation, TargetRotation);
+	if (BallRefFx)
+	{
+		FVector MoveLocation = UKismetMathLibrary::VLerp(BallRefFx->GetActorLocation(), Location, 0.1f);
+		float DistanceBall = UKismetMathLibrary::Vector_Distance(BallRefFx->GetActorLocation(), Location);
+		float RotateBallSpeed;
+		if (DistanceBall <= 2.0)
+			RotateBallSpeed = 0.001;
+		else
+			RotateBallSpeed = 5;
+		FRotator TargetRotation = BallRefFx->GetActorRotation();
+		TargetRotation.Roll += RotateBallSpeed;
+		BallRefFx->SetActorLocationAndRotation(MoveLocation, TargetRotation);
+	}
 }
 
 void AFxBaseCharacter::MoveBall_Srv_Implementation(FVector Location)
@@ -189,6 +192,7 @@ void AFxBaseCharacter::SetBallRef_Implementation(AFxBallActor* Ball_loc)
 {
 	BallRefFx=Ball_loc;
 	BallRefFx->CharacterOwner=this;
+	BallRefFx->RedOwned = ActorHasTag("Red");
 }
 
 void AFxBaseCharacter::GoalTarget(float DeltaTime)
