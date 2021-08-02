@@ -141,8 +141,8 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		if (GK)
 		{
 			DisablePhysics_srv();
-
-			//AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
+			USceneComponent* GkMesh = GK->GetMesh();
+			AttachToComponent(GkMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
 			return;
 		}
