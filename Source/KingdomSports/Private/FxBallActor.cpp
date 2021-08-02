@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SceneComponent.h"
 #include "MyGKCharacter.h"
 #include "GameFramework/GameState.h"
 #include "GameFramework/PlayerState.h"
@@ -27,7 +28,7 @@ AFxBallActor::AFxBallActor()
 	BallMesh->SetupAttachment(BallCollision);
 	//SplineComponentFx= CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	//StartLocation =TargetLocation=GetActorLocation();
-	
+
 }
 
 void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -103,9 +104,9 @@ void AFxBallActor::DisablePhysics_Multi_Implementation()
 
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+
 	AFxBaseCharacter* CharLoc = Cast<AFxBaseCharacter>(OtherActor);
-	if (CharLoc) 
+	if (CharLoc)
 	{
 		if ((CharLoc->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall && CharLoc == CharacterOwner) || CharLoc->IsStunned)
 			return;
@@ -140,7 +141,8 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		if (GK)
 		{
 			DisablePhysics_srv();
-			AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
+
+			//AttachToComponent(GK->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
 			return;
 		}
@@ -161,5 +163,5 @@ void AFxBallActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 		//if (IsBallCurve)
-		//	CurveFTimeline.TickTimeline(DeltaTime);		
+		//	CurveFTimeline.TickTimeline(DeltaTime);
 }

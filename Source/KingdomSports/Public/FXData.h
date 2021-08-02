@@ -172,8 +172,8 @@ struct FCameraSettingsFx : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
 	float TargetArmLength;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,  Category = Fx)
-	FVector SocketOffset;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite,  Category = Fx)
+	FVector SocketOffset;*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  Category = Fx)
 	bool bislagEnabled=true;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
@@ -249,6 +249,7 @@ public:
     TArray<class AActor*> AlreadyHitActors;
 
 };
+/*
 USTRUCT(BlueprintType)
 struct FTraceInfo
 {
@@ -256,7 +257,7 @@ struct FTraceInfo
 
 public:
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = FX)
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = FX)
     FName StartSocket;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = FX)
@@ -265,7 +266,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = FX)
     float Radius;
 
-	/** Select if it's Area or Point Damage*/
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (EditCondition = bAutoApplyDamage), Category = ACM)
     EDamageType DamageType;
 
@@ -278,11 +279,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
     float TrailLength = 1.f;
 
-	/** The type of damage applied*/
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (EditCondition = bAutoApplyDamage), Category = ACM)
     TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
 
-	/** The base damage to apply to the actor (Can be modified in you TakeDamage Implementation)*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (EditCondition = bAutoApplyDamage), Category = ACM)
     float BaseDamage = 0.f;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (EditCondition = bAutoApplyDamage), Category = ACM)
@@ -290,7 +290,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = FX)
 	TEnumAsByte<ECollisionChannel> TraceChannelFx;
 };
-
+*/
 USTRUCT(BlueprintType)
 struct FGameCurvesFx
 {
@@ -341,90 +341,7 @@ public:
 
 //////Quest System//////////////
 ///
-UENUM(BlueprintType)
-enum class EQuestStatusFx : uint8
-{
-	EAll UMETA(DisplayName = "All"),
-	ECompleted UMETA(DisplayName = "Completed"),
-	EFailed UMETA(DisplayName = "Failed"),
-	ECurrent UMETA(DisplayName = "Current"),
 
-
-   };
-UENUM(BlueprintType)
-enum class EObjectTypeFx : uint8
-{
-	EKill UMETA(DisplayName = "Kill"),
-    EReachDestination UMETA(DisplayName = "ReachDestination"),
-    EPickUp UMETA(DisplayName = "PickUp"),
-    EDelivery UMETA(DisplayName = "Delivery"),
-    ETimed UMETA(DisplayName = "Timed"),
-    ECustom UMETA(DisplayName = "Custom"),
-
-   };
-UENUM(BlueprintType)
-enum class ERewordTypeFx : uint8
-{
-	EGold UMETA(DisplayName = "Gold"),
-    EGem UMETA(DisplayName = "Gem"),
-    EXP UMETA(DisplayName = "XP"),
-    ESkillPoint UMETA(DisplayName = "SkillPoint"),
-    EIron UMETA(DisplayName = "Iron"),
-    EWood UMETA(DisplayName = "Wood"),
-    EPotion UMETA(DisplayName = "Potion"),
-    EFood UMETA(DisplayName = "EFood"),
-
-   };
-USTRUCT(BlueprintType)
-struct FRewordInfo: public FTableRowBase
-{
-	GENERATED_BODY()
- UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Fx)
- ERewordTypeFx RewordType ;
-	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
-     FText Name ;
-	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
-        int Number ;
-
-};
-USTRUCT(BlueprintType)
-struct FRewordList: public FTableRowBase
-{
-	GENERATED_BODY()
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-     TArray<FRewordInfo> RewordList;
-
-};
-USTRUCT(BlueprintType)
-struct FQuestInfoFx: public FTableRowBase
-{
-	GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Fx)
-     FText QuestName ;
-	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
-     FText QuestDescription ;
-	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = Fx)
-     int CurrentIndex ;
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = Fx)
-   TArray<class UFXBaseObjectiveAction*>  ObjectivesList;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = Fx)
-   class UFXEndQuestAction*  EndQuestAction;*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       int RecommendedLevel;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       FRewordList RewordList;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       bool IsActive;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       FTransform PlayerSpawnLocation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       FName MapQuest;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       int QuestSequenceNumber;
-
-
-};
 
 USTRUCT(BlueprintType)
 struct FSpawnInfo: public FTableRowBase
@@ -481,14 +398,6 @@ struct FPlayerInfoFx : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
     int CurrentObjectiveIndex;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       FQuestInfoFx CurrentQuest;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       TArray<FQuestInfoFx> CurrentQuestList;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       TArray<FQuestInfoFx> CompletedQuestList;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FX)
-       TArray<FQuestInfoFx> FailedQuestList;
 
 };
 UCLASS()

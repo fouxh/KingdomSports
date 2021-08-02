@@ -38,7 +38,7 @@ public:
 	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite)
     class AFxBaseCharacter* CharacterOwner;
 	UPROPERTY(BlueprintReadwrite)
-	AGameStateBase* Gamestate;
+	class AGameStateBase* Gamestate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool RedOwned;
 /////////////////////////////////////////////////////////////////////////////
