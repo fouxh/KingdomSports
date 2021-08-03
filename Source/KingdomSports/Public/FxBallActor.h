@@ -56,6 +56,8 @@ public:
 	void DisablePhysics_Multi();
 	UFUNCTION(BlueprintCallable,Category=Fx)
 	void OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintImplementableEvent,Category=Fx)
+	void HasBallInhand(class AMyGKCharacter* GK);
 
 protected:
 	// Called when the game starts or when spawned

@@ -16,7 +16,8 @@ class KINGDOMSPORTS_API AFxBaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFxBaseCharacter();
-	
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
+          class USceneComponent* BallLoc;*/
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = FX)
 	AFxBallActor* BallRefFx;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = FX)
@@ -39,6 +40,7 @@ public:
 	FVector GoalTargetLocation;
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = State)
     EPlayerBallStatusFx PlayerBallStatus;
+
 //////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(BlueprintPure, Category = FX)
 		EIntentDirectionTypeFx GetDirection();

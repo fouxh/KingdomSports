@@ -7,11 +7,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/ArrowComponent.h"
+#include "Components/SceneComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 // Sets default values
 AFxBaseCharacter::AFxBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	/*BallLoc = CreateDefaultSubobject<USceneComponent>(TEXT("BallLocation"));
+	BallLoc->SetupAttachment(GetMesh(),"BallHand");*/
 }
 
 void AFxBaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
