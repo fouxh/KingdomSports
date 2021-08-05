@@ -13,8 +13,6 @@
 AFxBaseCharacter::AFxBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	/*BallLoc = CreateDefaultSubobject<USceneComponent>(TEXT("BallLocation"));
-	BallLoc->SetupAttachment(GetMesh(),"BallHand");*/
 }
 
 void AFxBaseCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

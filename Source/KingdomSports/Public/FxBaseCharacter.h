@@ -16,8 +16,6 @@ class KINGDOMSPORTS_API AFxBaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFxBaseCharacter();
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
-          class USceneComponent* BallLoc;*/
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = FX)
 	AFxBallActor* BallRefFx;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = FX)
@@ -86,5 +84,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };

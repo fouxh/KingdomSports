@@ -109,11 +109,20 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 	if (CharLoc)
 	{
 		if ((CharLoc->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall && CharLoc == CharacterOwner) || CharLoc->IsStunned)
-			return;
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ZM1"));
 
+			return;
+		}
+		if (CharacterOwner && CharacterOwner->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall &&  CharLoc->Tags[0] == CharacterOwner->Tags[0]) 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ZM"));
+			return;
+		}
 		if (!CharLoc->IsStunned)
 		{
 			CharLoc->SetBallRef(this);
+			CharacterOwner = CharLoc;
 			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
 			CharLoc->UpdateTick(true);
 			CharLoc->SetActorTickEnabled(true);
@@ -141,9 +150,8 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		if (GK)
 		{
 			DisablePhysics_srv();
-		   // USceneComponent* GkMesh = GK->BallLoc;
 			HasBallInhand(GK);
-/*USceneComponent* gks = Cast<USceneComponent>(GK->GetMesh());
+			/*USceneComponent* gks = Cast<USceneComponent>(GK->GetMesh());
 			AttachToComponent( gks, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");*/
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));

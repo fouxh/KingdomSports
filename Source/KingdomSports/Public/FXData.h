@@ -190,10 +190,10 @@ struct FCameraSettingsFx : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  Category = Fx)
 	TSubclassOf<class UCameraShake> CameraShake;
-
-
-
 };
+
+
+
 
 USTRUCT(BlueprintType)
 struct FActionFx : public FTableRowBase
@@ -400,6 +400,7 @@ struct FPlayerInfoFx : public FTableRowBase
     int CurrentObjectiveIndex;
 
 };
+
 UCLASS()
 class KINGDOMSPORTS_API UFXData : public UObject
 {
