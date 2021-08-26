@@ -109,16 +109,10 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 	if (CharLoc)
 	{
 		if ((CharLoc->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall && CharLoc == CharacterOwner) || CharLoc->IsStunned)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ZM1"));
-
 			return;
-		}
 		if (CharacterOwner && CharacterOwner->PlayerBallStatus == EPlayerBallStatusFx::EPossessBall &&  CharLoc->Tags[0] == CharacterOwner->Tags[0]) 
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("ZM"));
 			return;
-		}
+
 		if (!CharLoc->IsStunned)
 		{
 			CharLoc->SetBallRef(this);
