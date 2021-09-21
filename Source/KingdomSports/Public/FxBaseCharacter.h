@@ -16,28 +16,30 @@ class KINGDOMSPORTS_API AFxBaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFxBaseCharacter();
-	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = FX)
-	AFxBallActor* BallRefFx;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = FX)
-	AActor* Target;
+		AFxBallActor* BallRefFx;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = FX)
+		AActor* Target;
 	UPROPERTY(BlueprintReadwrite)
-	TArray<AActor*> PlayerArray_Out;
+		TArray<AActor*> PlayerArray_Out;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite)
-	bool IsStunned;
+		bool IsStunned;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = FX)
-    EIntentDirectionTypeFx DirectionIntent;
+		EIntentDirectionTypeFx DirectionIntent;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
-    float MoveForwardFx;
+		float MoveForwardFx;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
-    float MoveRightFx;
+		float MoveRightFx;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
-    float MaxBallDistance=120.0;
+		float MaxBallDistance = 120.0;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = State)
-    float MinBallDistance=30.0;
+		float MinBallDistance = 30.0;
 	UPROPERTY(EditAnywhere, BlueprintReadwrite)
-	FVector GoalTargetLocation;
-	UPROPERTY(Replicated,EditAnywhere, BlueprintReadwrite, Category = State)
-    EPlayerBallStatusFx PlayerBallStatus;
+		FVector GoalTargetLocation;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite, Category = State)
+		EPlayerBallStatusFx PlayerBallStatus;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite)
+		bool Bicycle;
 
 //////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(BlueprintPure, Category = FX)

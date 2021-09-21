@@ -34,6 +34,7 @@ AFxBallActor::AFxBallActor()
 void AFxBallActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AFxBallActor, BallCrossed);
 	//DOREPLIFETIME(AFxBallActor, IsBallCurve);
 	//DOREPLIFETIME(AFxBallActor, CharacterOwner);
 }
@@ -145,14 +146,10 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		{
 			DisablePhysics_srv();
 			HasBallInhand(GK);
-			/*USceneComponent* gks = Cast<USceneComponent>(GK->GetMesh());
-			AttachToComponent( gks, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), "BallHand");*/
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("GK"));
 			return;
 		}
 
-		if (BallCollision->IsSimulatingPhysics())
+		if (BallCollision->IsSimulatingPhysics() && !CharLoc->Bicycle)
 			CharLoc->ResetBallPhysics();
 	}
 }
