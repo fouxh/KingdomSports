@@ -22,7 +22,7 @@ public class KingdomSports : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore","NavigationSystem" ,"AdvancedSessions","AdvancedSteamSessions","TargetSystem"
+				"SlateCore","NavigationSystem" ,"AdvancedSessions","AdvancedSteamSessions","TargetSystem","AgoraPlugin", "AgoraBlueprintable"
 				// ... add private dependencies that you statically link with here ...
 			}
 		);
