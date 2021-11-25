@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2021 at 06:10 PM
--- Server version: 10.4.14-MariaDB
--- PHP Version: 7.4.9
+-- Generation Time: Nov 25, 2021 at 01:36 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,30 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `football_fx`
+-- Database: `football`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clan`
+--
+
+CREATE TABLE `clan` (
+  `ClanID` int(11) UNSIGNED NOT NULL,
+  `Logo` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `Trophies` mediumint(11) UNSIGNED NOT NULL DEFAULT 0,
+  `Type` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `Requirement` smallint(5) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `clan`
+--
+
+INSERT INTO `clan` (`ClanID`, `Logo`, `Trophies`, `Type`, `Requirement`) VALUES
+(5, 0, 0, 0, 0),
+(6, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -69,28 +91,64 @@ INSERT INTO `match_making` (`Id`, `Team_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `players`
+--
+
+CREATE TABLE `players` (
+  `PlayerID` int(7) UNSIGNED NOT NULL,
+  `Name` varchar(14) NOT NULL,
+  `Status` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `Flag` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `Gem` mediumint(7) UNSIGNED NOT NULL DEFAULT 0,
+  `Gold` mediumint(7) UNSIGNED NOT NULL DEFAULT 0,
+  `PlayerChar` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
+  `Stars` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `Trophies` mediumint(7) UNSIGNED NOT NULL DEFAULT 0,
+  `Energy` tinyint(1) UNSIGNED NOT NULL DEFAULT 5,
+  `Pass` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `ClanID` int(11) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `players`
+--
+
+INSERT INTO `players` (`PlayerID`, `Name`, `Status`, `Flag`, `Gem`, `Gold`, `PlayerChar`, `Stars`, `Trophies`, `Energy`, `Pass`, `ClanID`) VALUES
+(15, '', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6),
+(18, '12', 1, 0, 0, 0, 0, 0, 0, 5, 0, 5),
+(19, '512', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6),
+(20, '523', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6),
+(21, '142', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `player_info`
 --
 
 CREATE TABLE `player_info` (
-  `ID` int(11) NOT NULL,
-  `PlayerID` varchar(50) NOT NULL,
-  `Gold` int(11) NOT NULL,
-  `Gem` int(11) NOT NULL,
-  `Trophies` int(11) NOT NULL,
-  `Goals` int(11) NOT NULL,
-  `Assist` int(11) NOT NULL,
-  `Win` int(11) NOT NULL,
-  `Lose` int(11) NOT NULL,
-  `Draw` int(11) NOT NULL
+  `ID` int(7) UNSIGNED NOT NULL,
+  `Win` int(11) UNSIGNED NOT NULL,
+  `Draw` int(11) UNSIGNED NOT NULL,
+  `Lose` int(11) UNSIGNED NOT NULL,
+  `Goals` smallint(11) UNSIGNED NOT NULL,
+  `Assists` smallint(11) UNSIGNED NOT NULL,
+  `Passes` smallint(11) UNSIGNED NOT NULL,
+  `MVP` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `WinStreak` smallint(10) UNSIGNED NOT NULL DEFAULT 0,
+  `BestStreak` smallint(10) UNSIGNED NOT NULL DEFAULT 0,
+  `Tackles` smallint(10) UNSIGNED NOT NULL DEFAULT 0,
+  `Tackled` smallint(10) UNSIGNED NOT NULL DEFAULT 0,
+  `Rank` mediumint(10) UNSIGNED NOT NULL DEFAULT 0,
+  `PlayerID` int(7) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `player_info`
 --
 
-INSERT INTO `player_info` (`ID`, `PlayerID`, `Gold`, `Gem`, `Trophies`, `Goals`, `Assist`, `Win`, `Lose`, `Draw`) VALUES
-(1, 'ghghg', 1, 2, 5, 4, 6, 5, 11, 50);
+INSERT INTO `player_info` (`ID`, `Win`, `Draw`, `Lose`, `Goals`, `Assists`, `Passes`, `MVP`, `WinStreak`, `BestStreak`, `Tackles`, `Tackled`, `Rank`, `PlayerID`) VALUES
+(7, 10, 2, 5, 12, 4, 15, 3, 2, 5, 18, 10, 2000, 21);
 
 -- --------------------------------------------------------
 
@@ -265,6 +323,12 @@ INSERT INTO `url_service` (`id`, `path`, `Status`, `match_id`) VALUES
 --
 
 --
+-- Indexes for table `clan`
+--
+ALTER TABLE `clan`
+  ADD PRIMARY KEY (`ClanID`) USING BTREE;
+
+--
 -- Indexes for table `match_info`
 --
 ALTER TABLE `match_info`
@@ -277,10 +341,19 @@ ALTER TABLE `match_making`
   ADD PRIMARY KEY (`Id`);
 
 --
+-- Indexes for table `players`
+--
+ALTER TABLE `players`
+  ADD PRIMARY KEY (`PlayerID`),
+  ADD UNIQUE KEY `Name` (`Name`),
+  ADD KEY `PlayerRef` (`ClanID`);
+
+--
 -- Indexes for table `player_info`
 --
 ALTER TABLE `player_info`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `PlayerID` (`PlayerID`);
 
 --
 -- Indexes for table `tblmember`
@@ -311,6 +384,12 @@ ALTER TABLE `url_service`
 --
 
 --
+-- AUTO_INCREMENT for table `clan`
+--
+ALTER TABLE `clan`
+  MODIFY `ClanID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `match_info`
 --
 ALTER TABLE `match_info`
@@ -323,10 +402,16 @@ ALTER TABLE `match_making`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
+-- AUTO_INCREMENT for table `players`
+--
+ALTER TABLE `players`
+  MODIFY `PlayerID` int(7) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
 -- AUTO_INCREMENT for table `player_info`
 --
 ALTER TABLE `player_info`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(7) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tblmember`
@@ -351,6 +436,22 @@ ALTER TABLE `team_members`
 --
 ALTER TABLE `url_service`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `players`
+--
+ALTER TABLE `players`
+  ADD CONSTRAINT `PlayerRef` FOREIGN KEY (`ClanID`) REFERENCES `clan` (`ClanID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `player_info`
+--
+ALTER TABLE `player_info`
+  ADD CONSTRAINT `player_info_ibfk_1` FOREIGN KEY (`PlayerID`) REFERENCES `players` (`PlayerID`) ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

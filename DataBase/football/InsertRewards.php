@@ -9,7 +9,7 @@ $Assist=$_REQUEST['Assist'];
 $Win=$_REQUEST['Win'];
 $Lose=$_REQUEST['Lose'];
 $Draw=$_REQUEST['Draw'];
-//test2.php?PID=ghghg&Gold=1&Gem=2&Trophies=5&Goals=4&Assist=6&Win=5&Lose=11&Draw=4
+//InsertRewards.php?PID=ghghg&Gold=1&Gem=2&Trophies=5&Goals=4&Assist=6&Win=5&Lose=11&Draw=4
 $sql = "INSERT INTO `player_info`( `PlayerID`, `Gold`, `Gem`, `Trophies`, `Goals`, `Assist`, `Win`, `Lose`, `Draw`) VALUES ('".$p_id."',".$Gold.",".$Gem.",".$Trophies.",".$Goals.",".$Assist.",".$Win.",".$Lose.",".$Draw.")";
 $val1="ahmed";
 $val2=2;
