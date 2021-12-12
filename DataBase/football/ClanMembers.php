@@ -2,7 +2,8 @@
 include "config.php";
 $ClanID=$_REQUEST['ClanID'];
 
-$Get = "SELECT clan.ClanID AS ClanID, players.PlayerID AS PlayerID FROM clan,players WHERE players.ClanID & clan.ClanID = '".$ClanID."'";
+//localhost/football/ClanMembers.php?ClanID=6
+$Get = "SELECT clan.ClanID AS ClanID, players.PlayerID AS PlayerID FROM clan,players WHERE players.ClanID & clan.ClanID = '$ClanID'";
 
 $GetResult=mysqli_query($conn, $Get);
 

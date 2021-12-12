@@ -14,6 +14,7 @@ $Energy=$_REQUEST['Energy'];
 $Pass=$_REQUEST['Pass'];
 $Field=$_REQUEST['Field'];
 $Value=$_REQUEST['Value'];
+$Tbl=$_REQUEST['Tbl'];
 
 
 $sql = "INSERT INTO `players`(`Name`, `Status`, `Flag`, `Gem`, `Gold`, `PlayerChar`, `Stars`, `Trophies`, `Energy`, `Pass`) 
