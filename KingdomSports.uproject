@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.25",
+	"EngineAssociation": "{CDB1A0A7-4EEE-C16F-438A-90B301F7B6EC}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -45,7 +45,7 @@
 		},
 		{
 			"Name": "Xsolla",
-			"Enabled": false,
+			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/e32fb866a54a4a36a2359fb7a5251b59"
 		}
 	],
