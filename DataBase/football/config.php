@@ -5,7 +5,7 @@ date_default_timezone_set('Africa/Cairo');
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "football";
+$dbname = "football_fx";
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -18,7 +18,7 @@ function CheckValueDb($tbl, $condition_fx)
 	 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "football";
+$dbname = "football_fx";
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);

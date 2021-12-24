@@ -5,7 +5,10 @@ $p_id=$_REQUEST['PID'];
 //GetRewards.php?PID=ghghg
 $sql = "SELECT * FROM `player_info`  WHERE `PlayerID`='".$p_id."'";
 
+
 if ($result = mysqli_query($conn, $sql)) {
+ // echo "New record created successfully";
+
 
 if (mysqli_num_rows($result) > 0) {
   // output data of each row
@@ -19,6 +22,8 @@ $arr_no_value = array("id"=>0);
 
 echo json_encode($arr_no_value);
 }
+
+} else {
 
 }
 mysqli_close($conn);
