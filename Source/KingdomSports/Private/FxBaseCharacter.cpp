@@ -114,7 +114,7 @@ void AFxBaseCharacter::StartMoveWithTheBall()
 {
 	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall && BallRefFx)
 	{
-		FVector NewLocation = (GetActorForwardVector() * MaxBallDistance) + GetActorLocation();
+		FVector NewLocation = (GetActorForwardVector() * MaxBallDistance) + (GetActorRightVector() * 10.f) + GetActorLocation();
 		NewLocation.Z = 16;
 		MoveBall(NewLocation);
 	/*
@@ -207,13 +207,15 @@ void AFxBaseCharacter::GoalTarget(float DeltaTime)
 	if (Hit.bBlockingHit)
 	{
 		AGoalActor* GoalRef = Cast<AGoalActor>(Hit.GetActor());
-
 		if (GoalRef)
 		{
-			GoalTargetLocation = Hit.Location;
-			UChildActorComponent* GoalTarget = GoalRef->FindComponentByClass<UChildActorComponent>();
-			if (GoalTarget)
-				GoalTarget->SetWorldLocation(GoalTargetLocation);
+			if ((!GoalRef->RedNet && IsRed)||(!IsRed && GoalRef->RedNet))
+			{
+				GoalTargetLocation = Hit.Location;
+				UChildActorComponent* GoalTarget = GoalRef->FindComponentByClass<UChildActorComponent>();
+				if (GoalTarget)
+					GoalTarget->SetWorldLocation(GoalTargetLocation);
+			}
 		}
 	}
 }

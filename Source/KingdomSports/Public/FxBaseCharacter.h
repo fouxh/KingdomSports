@@ -40,7 +40,8 @@ public:
 		EPlayerBallStatusFx PlayerBallStatus;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadwrite)
 		bool Bicycle;
-
+	UPROPERTY(EditAnywhere, BlueprintReadwrite)
+		bool IsRed;
 //////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(BlueprintPure, Category = FX)
 		EIntentDirectionTypeFx GetDirection();
