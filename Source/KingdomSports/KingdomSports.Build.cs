@@ -11,7 +11,7 @@ public class KingdomSports : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore","UMG","AIModule","ApexDestruction","TargetSystem"
+				"GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore","UMG","AIModule","ApexDestruction","TargetSystem","Networking", "Sockets"
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);
