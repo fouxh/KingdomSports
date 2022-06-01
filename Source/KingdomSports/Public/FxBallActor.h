@@ -57,6 +57,8 @@ public:
 	void OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION(BlueprintImplementableEvent,Category=Fx)
 	void HasBallInhand(class AMyGKCharacter* GK);
+	UFUNCTION(BlueprintImplementableEvent)
+	void AttachBall(class AFxBaseCharacter* Player);
 	//UFUNCTION(BlueprintCallable,Category=Fx)
 //void FinishMoveBallCurve();
 //UFUNCTION(BlueprintCallable,Category=Fx)

@@ -47,14 +47,16 @@ public:
 		EIntentDirectionTypeFx GetDirection();
 	UFUNCTION(BlueprintCallable, Category = State)
 		void InitCharacter();
-	UFUNCTION(BlueprintCallable, Category = Fx)
-		void StartMoveWithTheBall();
+	//UFUNCTION(BlueprintCallable, Category = Fx)
+	//	void StartMoveWithTheBall();
 	UFUNCTION(BlueprintCallable)
 		void GoalTarget(float DeltaTime);
-	UFUNCTION(BlueprintCallable)
-		void MoveBall(FVector Location);
-	UFUNCTION(BlueprintCallable)
-		void BallMovement(FVector Location);
+	//UFUNCTION(BlueprintCallable)
+	//	void MoveBall(FVector Location);
+	//UFUNCTION(BlueprintCallable)
+	//	void BallMovement(FVector Location);
+	UFUNCTION(BlueprintImplementableEvent)
+		void AttachBall(class AFxBallActor* ball);
 //////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 		void ResetBallPhysics();
@@ -64,12 +66,12 @@ public:
 		void UpdateTick(bool _Enable);
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = State)
 		void UpdateBallStatus(EPlayerBallStatusFx _sts);
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-		void MoveBall_Srv(FVector Location);
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
-		void MoveBall_Multi(FVector Location);
-	UFUNCTION(Client, Reliable, BlueprintCallable)
-		void MoveBall_Client(FVector Location);
+	//UFUNCTION(Server, Reliable, BlueprintCallable)
+	//	void MoveBall_Srv(FVector Location);
+	//UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	//	void MoveBall_Multi(FVector Location);
+	//UFUNCTION(Client, Reliable, BlueprintCallable)
+	//	void MoveBall_Client(FVector Location);
 	//UFUNCTION(Server, Reliable, BlueprintCallable)
 	//	void PlayMontage_Srv(UAnimMontage* Animation);
 	//UFUNCTION(NetMulticast, Reliable, BlueprintCallable)

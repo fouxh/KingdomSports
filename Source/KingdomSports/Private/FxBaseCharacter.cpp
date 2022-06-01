@@ -110,72 +110,72 @@ void AFxBaseCharacter::InitCharacter()
 
 }
 
-void AFxBaseCharacter::StartMoveWithTheBall()
-{
-	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall && BallRefFx)
-	{
-		FVector NewLocation = (GetActorForwardVector() * MaxBallDistance) + (GetActorRightVector() * 10.f) + GetActorLocation();
-		NewLocation.Z = 16;
-		MoveBall(NewLocation);
-	/*
-	float Speed = GetVelocity().Size();
-	FHitResult HitResultFx;
-	FVector Start = (GetActorForwardVector()*MaxBallDistance)+GetActorLocation();
-	FVector End = Start+FVector(0.0,0.0,-500);
-	GetWorld()->LineTraceSingleByChannel(HitResultFx, Start, End, ECollisionChannel::ECC_Visibility);
-	if (HitResultFx.bBlockingHit)
-		MoveBall(HitResultFx.Location);*/
-	}
-}
-
-void AFxBaseCharacter::MoveBall(FVector Location)
-{
-	if (GetNetMode() == ENetMode::NM_Standalone)
-		BallMovement(Location);
-
-	if (HasAuthority())
-		return;
-	else
-	{
-		MoveBall_Client(Location);
-		MoveBall_Srv(Location);
-	}
-}
-
-void AFxBaseCharacter::BallMovement(FVector Location)
-{
-	if (BallRefFx)
-	{
-		FVector MoveLocation = UKismetMathLibrary::VLerp(BallRefFx->GetActorLocation(), Location, 0.1f);
-		float DistanceBall = UKismetMathLibrary::Vector_Distance(BallRefFx->GetActorLocation(), Location);
-		float RotateBallSpeed;
-		if (DistanceBall <= 2.0)
-			RotateBallSpeed = 0.001;
-		else
-			RotateBallSpeed = 5;
-		FRotator TargetRotation = BallRefFx->GetActorRotation();
-		TargetRotation.Roll += RotateBallSpeed;
-		BallRefFx->SetActorLocationAndRotation(MoveLocation, TargetRotation);
-	}
-}
-
-void AFxBaseCharacter::MoveBall_Srv_Implementation(FVector Location)
-{
-	MoveBall_Multi(Location);
-}
-
-void AFxBaseCharacter::MoveBall_Multi_Implementation(FVector Location)
-{
-	if (IsLocallyControlled())
-		return;
-	else
-		BallMovement(Location);
-}
-
-void AFxBaseCharacter::MoveBall_Client_Implementation(FVector Location)
-{
-	BallMovement(Location);
-}
+//void AFxBaseCharacter::StartMoveWithTheBall()
+//{
+//	if(PlayerBallStatus==EPlayerBallStatusFx::EPossessBall && BallRefFx)
+//	{
+//		FVector NewLocation = (GetActorForwardVector() * MaxBallDistance) + (GetActorRightVector() * 10.f) + GetActorLocation();
+//		NewLocation.Z = 16;
+//		MoveBall(NewLocation);
+//	/*
+//	float Speed = GetVelocity().Size();
+//	FHitResult HitResultFx;
+//	FVector Start = (GetActorForwardVector()*MaxBallDistance)+GetActorLocation();
+//	FVector End = Start+FVector(0.0,0.0,-500);
+//	GetWorld()->LineTraceSingleByChannel(HitResultFx, Start, End, ECollisionChannel::ECC_Visibility);
+//	if (HitResultFx.bBlockingHit)
+//		MoveBall(HitResultFx.Location);*/
+//	}
+//}
+//
+//void AFxBaseCharacter::MoveBall(FVector Location)
+//{
+//	if (GetNetMode() == ENetMode::NM_Standalone)
+//		BallMovement(Location);
+//
+//	if (HasAuthority())
+//		return;
+//	else
+//	{
+//		MoveBall_Client(Location);
+//		MoveBall_Srv(Location);
+//	}
+//}
+//
+//void AFxBaseCharacter::BallMovement(FVector Location)
+//{
+//	if (BallRefFx)
+//	{
+//		FVector MoveLocation = UKismetMathLibrary::VLerp(BallRefFx->GetActorLocation(), Location, 0.1f);
+//		float DistanceBall = UKismetMathLibrary::Vector_Distance(BallRefFx->GetActorLocation(), Location);
+//		float RotateBallSpeed;
+//		if (DistanceBall <= 2.0)
+//			RotateBallSpeed = 0.001;
+//		else
+//			RotateBallSpeed = 5;
+//		FRotator TargetRotation = BallRefFx->GetActorRotation();
+//		TargetRotation.Roll += RotateBallSpeed;
+//		BallRefFx->SetActorLocationAndRotation(MoveLocation, TargetRotation);
+//	}
+//}
+//
+//void AFxBaseCharacter::MoveBall_Srv_Implementation(FVector Location)
+//{
+//	MoveBall_Multi(Location);
+//}
+//
+//void AFxBaseCharacter::MoveBall_Multi_Implementation(FVector Location)
+//{
+//	if (IsLocallyControlled())
+//		return;
+//	else
+//		BallMovement(Location);
+//}
+//
+//void AFxBaseCharacter::MoveBall_Client_Implementation(FVector Location)
+//{
+//	BallMovement(Location);
+//}
 
 void AFxBaseCharacter::ResetBallPhysics_Implementation()
 {

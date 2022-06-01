@@ -98,14 +98,13 @@ void AFxBallActor::DisablePhysics_srv_Implementation()
 
 void AFxBallActor::DisablePhysics_Multi_Implementation()
 {
-	SetActorLocation(BallCollision->GetComponentLocation());
 	BallCollision->SetSimulatePhysics(false);
+	SetActorLocation(BallCollision->GetComponentLocation());
 	BallCollision->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 
 void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	AFxBaseCharacter* CharLoc = Cast<AFxBaseCharacter>(OtherActor);
 	if (CharLoc)
 	{
@@ -121,6 +120,8 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 			CharLoc->UpdateBallStatus(EPlayerBallStatusFx::EPossessBall);
 			CharLoc->UpdateTick(true);
 			CharLoc->SetActorTickEnabled(true);
+			CharLoc->AttachBall(this);
+
 			for (int i = 0; i < Gamestate->PlayerArray.Num(); ++i)
 			{
 				AFxBaseCharacter* Player_locref = Cast<AFxBaseCharacter>(Gamestate->PlayerArray[i]->GetPawn());
@@ -150,7 +151,10 @@ void AFxBallActor::OnOverlapActivateSphere(UPrimitiveComponent* OverlappedComp, 
 		}
 
 		if (BallCollision->IsSimulatingPhysics() && !CharLoc->Bicycle)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("sim"));
 			CharLoc->ResetBallPhysics();
+		}
 	}
 }
 
