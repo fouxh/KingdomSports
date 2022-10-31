@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{4BDE8598-4C37-8CDC-EE37-918BEC3E212B}",
+	"EngineAssociation": "{86E2439A-4B11-5F14-890E-E39E432046E8}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -52,6 +52,10 @@
 			"Name": "VertexAnimToolset",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/d998b22372a44975b312e85cf663bbab"
+		},
+		{
+			"Name": "AgoraPlugin",
+			"Enabled": false
 		}
 	],
 	"TargetPlatforms": [
