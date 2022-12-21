@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{86E2439A-4B11-5F14-890E-E39E432046E8}",
+	"EngineAssociation": "{98AB9FA0-4B7A-5693-E8BF-B1B89BAF7A78}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -56,6 +56,16 @@
 		{
 			"Name": "AgoraPlugin",
 			"Enabled": false
+		},
+		{
+			"Name": "RWSManager",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/3d57a790742d4880b210994b3568f220"
+		},
+		{
+			"Name": "PTMTool",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/946185f2400d4be9b8d4190e95df86c8"
 		}
 	],
 	"TargetPlatforms": [

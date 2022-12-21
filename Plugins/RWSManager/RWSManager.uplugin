@@ -1,0 +1,59 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0.6",
+	"FriendlyName": "RWSManager SDK",
+	"Description": "RWSManager SDK. Easily manage all your servers from one application.",
+	"Category": "Other",
+	"CreatedBy": "ReverseWinterStudios Inc.",
+	"CreatedByURL": "https://reversewinterstudios.com",
+	"DocsURL": "https://reversewinterstudios.com/documentation/?document=documentation--Setup-RWS-Manager",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/3d57a790742d4880b210994b3568f220",
+	"SupportURL": "https://reversewinterstudios.com/contacts/",
+	"EngineVersion": "4.25.0",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "RWSManager",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win32",
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux",
+				"XboxOne",
+				"PS4"
+			]
+		},
+		{
+			"Name": "RWSUtils",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win32",
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux",
+				"XboxOne",
+				"PS4"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "OnlineSubsystem",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemUtils",
+			"Enabled": true
+		}
+	]
+}
