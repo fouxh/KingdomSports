@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{CDB1A0A7-4EEE-C16F-438A-90B301F7B6EC}",
+	"EngineAssociation": "4.25",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -66,6 +66,10 @@
 			"Name": "PTMTool",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/946185f2400d4be9b8d4190e95df86c8"
+		},
+		{
+			"Name": "AppLovin",
+			"Enabled": false
 		}
 	],
 	"TargetPlatforms": [
