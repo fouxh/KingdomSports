@@ -75,6 +75,11 @@
 			"Name": "AdsPro",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/003c2267b99c461d833b3664ee5552ee"
+		},
+		{
+			"Name": "AnimatedTexture",
+			"Enabled": false,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/4e16df6426df4096aff1f67e3084b929"
 		}
 	],
 	"TargetPlatforms": [
