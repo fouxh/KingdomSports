@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2023 at 08:34 AM
+-- Generation Time: Jan 06, 2023 at 12:23 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -100,19 +100,21 @@ CREATE TABLE `players` (
   `Trophies` mediumint(7) UNSIGNED NOT NULL DEFAULT 0,
   `Energy` tinyint(1) UNSIGNED NOT NULL DEFAULT 5,
   `Pass` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
-  `ClanID` int(11) UNSIGNED DEFAULT NULL
+  `ClanID` int(11) UNSIGNED DEFAULT NULL,
+  `commonRewardedAdCounter` int(7) UNSIGNED NOT NULL,
+  `epicRewardedAdCounter` int(7) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `players`
 --
 
-INSERT INTO `players` (`PlayerID`, `Name`, `Status`, `Flag`, `Gem`, `Gold`, `PlayerChar`, `Stars`, `Trophies`, `Energy`, `Pass`, `ClanID`) VALUES
-(15, 'TestPlayer', 1, 0, 0, 200, 0, 0, 3, 5, 30, 6),
-(18, '12', 1, 0, 0, 0, 0, 0, 0, 5, 0, 5),
-(19, '512', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6),
-(20, '523', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6),
-(21, '142', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6);
+INSERT INTO `players` (`PlayerID`, `Name`, `Status`, `Flag`, `Gem`, `Gold`, `PlayerChar`, `Stars`, `Trophies`, `Energy`, `Pass`, `ClanID`, `commonRewardedAdCounter`, `epicRewardedAdCounter`) VALUES
+(15, 'TestPlayer', 1, 0, 0, 200, 0, 0, 3, 5, 30, 6, 0, 0),
+(18, '12', 1, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 0),
+(19, '512', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6, 0, 0),
+(20, '523', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6, 0, 0),
+(21, '142', 1, 0, 0, 0, 0, 0, 0, 5, 0, 6, 0, 0);
 
 -- --------------------------------------------------------
 
