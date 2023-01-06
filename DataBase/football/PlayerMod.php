@@ -37,7 +37,7 @@ $Delete = "DELETE FROM `players` WHERE `PlayerID`='".$PID."'";
 
 	 if ($FNC==1)		 {(mysqli_query($conn, $sql ));} 
 else if ($FNC=="NewUser"){(mysqli_query($conn, $NewUser));} 
-else if ($FNC=="Update" ){(mysqli_query($conn, $Update));} 
+else if ($FNC=="Update" ){($GetResult=mysqli_query($conn, $Update));} 
 else if ($FNC=="Get")	 {($GetResult=mysqli_query($conn, $Get));}
 else if ($FNC=="GetAll") {($GetResult=mysqli_query($conn, $GetAll));}
 else if ($FNC=="Delete") {(mysqli_query($conn, $Delete));}

@@ -9,4 +9,5 @@ $sql = "DELETE FROM `match_making` WHERE `Team_id` ='".$id_team."'";
 mysqli_close($conn);
 
 echo json_encode($return_arr);
+
 ?>

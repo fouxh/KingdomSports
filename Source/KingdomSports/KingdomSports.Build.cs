@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 using UnrealBuildTool;
-
+using System;
+using System.IO;
 public class KingdomSports : ModuleRules
 {
 	public KingdomSports(ReadOnlyTargetRules Target) : base(Target)
@@ -26,6 +27,8 @@ public class KingdomSports : ModuleRules
 				// ... add private dependencies that you statically link with here ...
 			}
 		);
+		var manifest_file = Path.Combine(ModuleDirectory, "Extra_UPL.xml");
+        AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", manifest_file));
 
 		//PublicIncludePaths.AddRange(new string[] { "TargetSystem/Public", "TargetSystem/Classes", "TargetSystem/Private" });
 

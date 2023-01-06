@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- XML -->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- Gradle Properties -->
+<gradleProperties>
+<insert>
+ANDROID_BUILD_TOOLS_GRADLE_VERSION=com.android.tools.build:gradle:4.1.2
+ANDROID_TOOLS_BUILD_GRADLE_VERSION=com.android.tools.build:gradle:4.1.2
+</insert>
+</gradleProperties>
+</root>

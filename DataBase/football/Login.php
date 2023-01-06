@@ -12,7 +12,9 @@ $sql = "SELECT * FROM `tblmember` WHERE `pl_id`=".$id;
 else
 {
 $last_id =uniqid('pl_');
-$sql = "INSERT INTO `tblmember`(`pl_id`,`fName`,`email`)  VALUES ('".$last_id."','".$name_fx."','".$email_fx."')";
+//$sql = "INSERT INTO `tblmember`(`pl_id`,`fName`,`email`)  VALUES ('".$last_id."','".$name_fx."','".$email_fx."')";
+$sql ="INSERT INTO `tblmember`( `pl_id`, `fName`, `lName`, `email`, `password`,`birthdate`, `gender`, `player_type`, `Status`) VALUES ('".$last_id."','".$name_fx."','','".$email_fx."','','','',0,0)";
+//echo $sql;
 }
 $return_arr = array();
 $row_array = array();
